@@ -1,0 +1,9 @@
+[package]
+name = "examples"
+edition = "2021"
+
+[dependencies]
+yew = "0.21.0"
+typed-i18n = { path = "../typed-i18n" }
+
+[workspace]

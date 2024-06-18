@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "typed-i18n",
+    "typed-i18n-derive",
+    "typed-i18n-support",
+]
+resolver = "2"

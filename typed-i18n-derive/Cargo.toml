@@ -1,0 +1,26 @@
+[package]
+name = "typed-i18n-derive"
+version = "0.6.0"
+authors = ["ALeX Kazik <alex@kazik.de>"]
+edition = "2021"
+description = "Derive macro for typed-i18n"
+repository = "https://github.com/alexkazik/typed-i18n"
+license = "MIT"
+keywords = []
+categories = []
+readme = "README.md"
+rust-version = "1.64.0"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro-error = { version = "1.0.4", default-features = false }
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "2", default-features = false, features = ["derive", "parsing", "printing", "proc-macro"] }
+typed-i18n-support = { version = "0.6", path = "../typed-i18n-support" }
+
+[features]
+default = ["alloc"]
+alloc = []

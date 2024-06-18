@@ -1,0 +1,7 @@
+hello:
+  world:
+    en: Hello World
+    de: Hallo Welt
+  you:
+    en: Hello %{name}*{icon}
+    de: Hallo %{name}*{icon}

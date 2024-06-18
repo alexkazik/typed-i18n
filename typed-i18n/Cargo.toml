@@ -1,0 +1,25 @@
+[package]
+name = "typed-i18n"
+version = "0.6.0"
+authors = ["ALeX Kazik <alex@kazik.de>"]
+edition = "2021"
+description = "A type safe i18n system"
+repository = "https://github.com/alexkazik/typed-i18n"
+license = "MIT"
+keywords = [
+    "i18n",
+    "l10n",
+    "intl",
+    "internationalization",
+    "translation",
+]
+categories = ["localization", "internationalization", "no-std"]
+readme = "README.md"
+rust-version = "1.64.0"
+
+[dependencies]
+typed-i18n-derive = { version = "0.6", path = "../typed-i18n-derive" }
+
+[features]
+default = ["alloc"]
+alloc = []
