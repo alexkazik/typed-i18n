@@ -1,3 +1,10 @@
+[![Codecov](https://codecov.io/github/alexkazik/typed-i18n/coverage.svg?branch=main)](https://codecov.io/gh/alexkazik/typed-i18n)
+[![Dependency status](https://deps.rs/repo/github/alexkazik/typed-i18n/status.svg)](https://deps.rs/repo/github/alexkazik/typed-i18n)
+[![crates.io](https://img.shields.io/crates/v/typed-i18n.svg)](https://crates.io/crates/typed-i18n)
+[![Downloads](https://img.shields.io/crates/d/typed-i18n.svg)](https://crates.io/crates/typed-i18n)
+[![Github stars](https://img.shields.io/github/stars/alexkazik/typed-i18n.svg?logo=github)](https://github.com/alexkazik/typed-i18n/stargazers)
+[![License](https://img.shields.io/crates/l/typed-i18n.svg)](./LICENSE)
+
 # crate typed-i18n
 
 <!-- cargo-rdme start -->
