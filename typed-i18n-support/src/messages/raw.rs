@@ -49,7 +49,7 @@ impl<'a> RawMessages<'a> {
         let mut params = Vec::new();
         for (lang, msg) in v {
             if !languages.iter().any(|l| l.name == lang) {
-                diagnostic.emit_warning(span, format!("language {lang} key {k} is not known"));
+                diagnostic.emit_error(span, format!("language {lang} key {k} is not known"));
                 continue;
             }
             let msg_line = MessageLine::build(msg, |msg| {

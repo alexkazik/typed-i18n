@@ -16,7 +16,7 @@ fn no_messages() {
         &Common::languages_en_de(),
         r#"{}"#,
     );
-    diagnostic.assert_errors(&["Span: no messages found"]);
+    diagnostic.assert(&["Span: no messages found"]);
 }
 
 #[test]
@@ -29,5 +29,5 @@ fn language_warning() {
         &Common::languages_en_de(),
         r#"{"hello": {"en": "Hello", "unk": "Hello"} }"#,
     );
-    diagnostic.assert_warnings(&["Span: language unk key hello is not known"]);
+    diagnostic.assert(&["Span: language unk key hello is not known"]);
 }
