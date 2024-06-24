@@ -1,7 +1,6 @@
 pub(crate) mod lrc;
 pub(crate) mod message;
 pub(crate) mod message_line;
-#[allow(clippy::module_inception)]
 pub(crate) mod messages;
 pub(crate) mod param_type;
 pub(crate) mod piece;

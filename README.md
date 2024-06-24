@@ -183,7 +183,7 @@ Type of the input for typed `*{param}` parameters.
 
 All builders without `input` will silently skip all messages with typed parameters.
 
-If `_` a generic function over the input type is created. May lead to the same problems as
+With `_` a generic function over the input type is created. May lead to the same problems as
 a generic builder type.
 
 ### `input_conversion`

@@ -63,7 +63,7 @@ impl<'a> Messages<'a> {
             .extension()
             .and_then(OsStr::to_str)
         {
-            Some("lrc") => RawMessages::parse_lrc(diagnostic, span, content, languages),
+            Some("lrc") => RawMessages::parse_lrc(diagnostic, span, content),
             Some("yaml") => match serde_yaml::from_str::<SerdeInput>(content) {
                 Ok(key_map) => {
                     RawMessages::parse_serde(diagnostic, span, &parameters.separator, key_map)

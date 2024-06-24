@@ -14,41 +14,47 @@ pub(crate) struct Parser {
 
 impl Parser {
     pub(crate) fn parse<D: Diagnostic>(diagnostic: &mut D, a: Attribute) -> Option<Parser> {
-        if a.path().is_ident(ATTRIBUTE_NAME) {
-            let span = a.span();
-            if let Meta::List(meta_list) = a.meta {
-                let nested = meta_list
-                    .parse_args_with(Punctuated::<Meta, Token![,]>::parse_terminated)
-                    .map_err(|e| {
-                        diagnostic.emit_error(meta_list.span(), format!("meta parse error: {e}"));
-                    })
-                    .ok()?;
-                let mut values = BTreeMap::new();
-                for outer in nested {
-                    if let Meta::NameValue(MetaNameValue {
-                        path,
-                        value:
-                            Expr::Lit(ExprLit {
-                                lit: Lit::Str(lit), ..
-                            }),
-                        ..
-                    }) = outer
-                    {
-                        if let Some((name, span)) = path_to_name_span(diagnostic, path) {
-                            if values.insert(name, (span, lit.value())).is_some() {
-                                diagnostic.emit_error(span, "duplicate name");
-                            }
+        if !a.path().is_ident(ATTRIBUTE_NAME) {
+            return None;
+        }
+
+        let span = a.span();
+        if let Meta::List(meta_list) = a.meta {
+            let nested = meta_list
+                .parse_args_with(Punctuated::<Meta, Token![,]>::parse_terminated)
+                .map_err(|e| {
+                    diagnostic.emit_error(meta_list.span(), format!("meta parse error: {e}"));
+                })
+                .ok()?;
+            let mut values = BTreeMap::new();
+            for outer in nested {
+                if let Meta::NameValue(MetaNameValue {
+                    path,
+                    value:
+                        Expr::Lit(ExprLit {
+                            lit: Lit::Str(lit), ..
+                        }),
+                    ..
+                }) = outer
+                {
+                    if let Some((name, span)) = path_to_name_span(diagnostic, path) {
+                        if values.insert(name, (span, lit.value())).is_some() {
+                            diagnostic.emit_error(span, "duplicate name");
                         }
                     } else {
-                        diagnostic.emit_error(outer, "unsupported attribute type");
+                        return None;
                     }
+                } else {
+                    diagnostic.emit_error(outer, "unsupported attribute type");
+                    return None;
                 }
-
-                return Some(Parser { span, values });
             }
+
+            Some(Parser { span, values })
+        } else {
             diagnostic.emit_error(a.meta, "unsupported attribute type");
+            None
         }
-        None
     }
 
     pub(crate) fn span(&self) -> Span {

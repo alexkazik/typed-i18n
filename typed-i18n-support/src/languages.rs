@@ -76,7 +76,7 @@ impl RawLanguages {
                     let a_span = a.span();
                     if let Some(mut parser) = Parser::parse(diagnostic, a) {
                         if has_attr {
-                            diagnostic.emit_error(a_span, "DuplicateVariantAttribute");
+                            diagnostic.emit_error(a_span, "duplicate variant attribute");
                         } else {
                             has_attr = true;
                             name = parser.remove("name").map(|l| l.1);
@@ -122,7 +122,7 @@ impl RawLanguages {
     pub fn into<D: Diagnostic>(self, diagnostic: &mut D, span: Span) -> Languages {
         let mut languages = self.0;
         if languages.is_empty() {
-            diagnostic.emit_error(span, "no variants found");
+            diagnostic.emit_error(span, "no languages found");
             diagnostic.should_abort_if_dirty();
         }
         let names = languages

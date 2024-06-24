@@ -135,13 +135,13 @@ impl Builder {
                 }
                 for (t, g) in &generics {
                     match *t {
-                        ParamType::Str => output.extend(quote!(#g : AsRef<str>,)),
+                        ParamType::Str => output.extend(quote!(#g : ::core::convert::AsRef<str>,)),
                         ParamType::Typed => match self.input_conversion {
                             InputConversion::Into => {
-                                output.extend(quote!(#g : Into<#input_ident>,));
+                                output.extend(quote!(#g : ::core::convert::Into<#input_ident>,));
                             }
                             InputConversion::AsRef => {
-                                output.extend(quote!(#g : AsRef<#input_ident>,));
+                                output.extend(quote!(#g : ::core::convert::AsRef<#input_ident>,));
                             }
                             InputConversion::Value | InputConversion::Ref => {}
                         },

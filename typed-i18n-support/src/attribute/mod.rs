@@ -14,7 +14,9 @@ pub struct Attributes {
 
 pub struct Builder {
     pub(crate) span: Span,
+    #[allow(clippy::struct_field_names)] // because of a false positive
     pub(crate) builder_variant: BuilderVariant,
+    #[allow(clippy::struct_field_names)] // because of a false positive
     pub(crate) builder_type: Type,
     pub(crate) prefix: Option<String>,
     pub(crate) str_conversion: StrConversion,

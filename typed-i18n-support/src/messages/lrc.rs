@@ -1,9 +1,8 @@
 use crate::diagnostic::Diagnostic;
-use crate::languages::Languages;
 use crate::messages::messages::Messages;
 use crate::messages::raw::RawMessages;
 use indexmap::IndexMap;
-use proc_macro2::{Ident, Span};
+use proc_macro2::Span;
 use std::borrow::Cow;
 use std::mem;
 
@@ -12,7 +11,6 @@ impl<'a> RawMessages<'a> {
         diagnostic: &mut D,
         span: Span,
         content: &'a str,
-        languages: &Languages,
     ) -> Self {
         let mut current_msg = None;
         let mut current = IndexMap::new();
@@ -34,19 +32,13 @@ impl<'a> RawMessages<'a> {
                 }
                 key_pos = pos;
                 let line = line.trim();
-                if syn::parse_str::<Ident>(line).is_err() {
-                    diagnostic.emit_error(span, format!("invalid key {line} at line {key_pos}"));
-                }
                 current_msg = Some(line);
             } else if current_msg.is_none() {
                 diagnostic.emit_error(span, format!("value without key at line {pos}"));
             } else {
                 let (a, b) = line.split_once(' ').unwrap_or((line, ""));
                 let a = a.trim();
-                if !languages.iter().any(|l| l.name == a) {
-                    diagnostic
-                        .emit_warning(span, format!("language {a} at line {pos} is not known"));
-                } else if current
+                if current
                     .insert(Cow::Borrowed(a), Cow::Borrowed(b.trim()))
                     .is_some()
                 {

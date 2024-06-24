@@ -69,7 +69,6 @@ impl Simulated {
     }
 
     /// Assert that there are the specified warnings and errors.
-    #[allow(clippy::missing_panics_doc)]
     pub fn assert(&self, warnings: &[&str], errors: &[&str]) {
         assert_eq!(self.warnings, warnings);
         assert_eq!(self.errors, errors);
