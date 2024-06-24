@@ -1,0 +1,5 @@
+error: the separator contains invalid characters
+ --> tests/compile-fail/invalid_separator.rs:4:56
+  |
+4 | #[typed_i18n(filename = "tests/compile-fail/demo.lrc", separator = "+")]
+  |                                                        ^^^^^^^^^

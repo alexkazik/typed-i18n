@@ -1,0 +1,5 @@
+error: only unit field items are allowed
+ --> tests/compile-fail/only_unit_fields.rs:7:5
+  |
+7 |     English(bool),
+  |     ^^^^^^^

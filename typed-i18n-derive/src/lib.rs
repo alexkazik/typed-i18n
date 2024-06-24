@@ -27,7 +27,9 @@ pub fn typed_i18n(item: TokenStream) -> TokenStream {
     let attributes = Attributes::parse(diagnostic, span, with_mixed_str, input.attrs);
 
     let file_path = {
-        let project_root = env::var("CARGO_MANIFEST_DIR").unwrap_or_else(|_| ".".into());
+        let project_root = env::var("CARGO_MANIFEST_DIR_OVERRIDE")
+            .or(env::var("CARGO_MANIFEST_DIR"))
+            .unwrap_or_else(|_| ".".into());
         let mut path = PathBuf::from(project_root);
         path.push(&attributes.parameters.filename);
         path

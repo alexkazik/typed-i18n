@@ -1,0 +1,5 @@
+error: invalid builder type: 5+5
+ --> tests/compile-fail/invalid_builder_type.rs:5:1
+  |
+5 | #[typed_i18n(builder = "5+5")]
+  | ^

@@ -1,0 +1,6 @@
+# hello
+en Hello
+# hello_you
+en Hello %{name}
+# hello_you_w_icon
+en Hello %{name}*{icon}

@@ -1,0 +1,5 @@
+error: duplicate parameters
+ --> tests/compile-fail/duplicate_parameters.rs:5:14
+  |
+5 | #[typed_i18n(filename = "tests/compile-fail/demo.lrc")]
+  |              ^^^^^^^^

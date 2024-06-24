@@ -1,0 +1,15 @@
+# hello_world
+en Hello world
+de Hallo Welt
+
+# hello_you
+en Hello %{name}
+de Hallo %{name}
+
+# hello_you_w_icon
+en Hello %{name}*{icon}
+de Hallo %{name}*{icon}
+
+# maybe_note
+en
+de Hinweis

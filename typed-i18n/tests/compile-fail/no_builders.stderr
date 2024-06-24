@@ -1,0 +1,5 @@
+error: no builders specified
+ --> tests/compile-fail/no_builders.rs:4:1
+  |
+4 | #[typed_i18n(filename = "tests/compile-fail/demo.lrc")]
+  | ^

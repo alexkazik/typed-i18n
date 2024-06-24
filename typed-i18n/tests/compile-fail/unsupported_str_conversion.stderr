@@ -1,0 +1,5 @@
+error: unsupported str conversion: unknown
+ --> tests/compile-fail/unsupported_str_conversion.rs:5:32
+  |
+5 | #[typed_i18n(builder = "bool", str_conversion = "unknown")]
+  |                                ^^^^^^^^^^^^^^

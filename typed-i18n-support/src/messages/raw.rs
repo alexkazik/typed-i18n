@@ -108,12 +108,13 @@ impl<'a> RawMessages<'a> {
         let mut start = 0;
         let mut in_param = false;
         let mut param_type = ParamType::Str;
+        let mut has_error = false;
 
         while pos < msg.len() {
             if pos + 1 < msg.len() && (msg[pos] == b'%' || msg[pos] == b'*') && msg[pos + 1] == b'{'
             {
                 if in_param {
-                    diagnostic.emit_error(span, format!("parse error in {k}.{lang}"));
+                    has_error = true;
                     pos += 2;
                 } else {
                     if pos > start {
@@ -133,7 +134,7 @@ impl<'a> RawMessages<'a> {
                 }
             } else if msg[pos] == b'}' {
                 if !in_param || pos == start {
-                    diagnostic.emit_error(span, format!("parse error in {k}.{lang}"));
+                    has_error = true;
                     in_param = false;
                     pos += 1;
                 } else {
@@ -162,12 +163,16 @@ impl<'a> RawMessages<'a> {
         }
 
         if in_param {
-            diagnostic.emit_error(span, format!("parse error in {k}.{lang}"));
+            has_error = true;
         } else if pos > start {
             // this is safe because it's only cut on ascii chars
             r.push(Piece::Text(unsafe {
                 from_utf8_unchecked(&msg[start..pos])
             }));
+        }
+
+        if has_error {
+            diagnostic.emit_error(span, format!("parse error in {k}.{lang}"));
         }
 
         r

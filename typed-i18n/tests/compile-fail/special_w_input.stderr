@@ -1,0 +1,5 @@
+error: special builder can't have an input
+ --> tests/compile-fail/special_w_input.rs:5:1
+  |
+5 | #[typed_i18n(builder = "static_str", input = "bool")]
+  | ^

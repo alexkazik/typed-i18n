@@ -158,3 +158,19 @@ impl RawLanguages {
         Languages(languages)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::languages::{Language, RawLanguages};
+
+    #[test]
+    fn raw_language_iter() {
+        assert_eq!(
+            RawLanguages(vec![Language::run_new("en", &[])])
+                .iter()
+                .map(|l| l.name.as_str())
+                .collect::<Vec<_>>(),
+            vec!["en"]
+        );
+    }
+}

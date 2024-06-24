@@ -68,3 +68,11 @@ impl Builder for Cow<'static, str> {
         self
     }
 }
+
+#[test]
+fn check_unlikely_call() {
+    assert_eq!(
+        Cow::Borrowed("Hello ").push_str("you"),
+        Cow::<'static, str>::Owned("Hello ".to_string()).push_str("you")
+    );
+}

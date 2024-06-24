@@ -1,0 +1,5 @@
+error: duplicate variant attribute
+ --> tests/compile-fail/duplicate_variant_attribute.rs:8:5
+  |
+8 |     #[typed_i18n(name = "en", fallback = "")]
+  |     ^

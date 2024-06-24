@@ -1,0 +1,5 @@
+error: missing parameters
+ --> tests/compile-fail/no_parameters.rs:4:1
+  |
+4 | #[typed_i18n(builder = "static_str")]
+  | ^

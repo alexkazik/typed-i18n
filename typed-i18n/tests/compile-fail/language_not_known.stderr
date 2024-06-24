@@ -1,0 +1,5 @@
+error: language se key hello is not known
+ --> tests/compile-fail/language_not_known.rs:4:1
+  |
+4 | #[typed_i18n(filename = "tests/compile-fail/language_not_known.lrc")]
+  | ^

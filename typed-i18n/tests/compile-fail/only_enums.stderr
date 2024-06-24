@@ -1,0 +1,5 @@
+error: only enums are supported
+ --> tests/compile-fail/only_enums.rs:4:1
+  |
+4 | #[typed_i18n(filename = "tests/compile-fail/demo.lrc")]
+  | ^

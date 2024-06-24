@@ -1,0 +1,5 @@
+error: unsupported input conversion: unknown
+ --> tests/compile-fail/unsupported_input_conversion.rs:5:48
+  |
+5 | #[typed_i18n(builder = "bool", input = "bool", input_conversion = "unknown")]
+  |                                                ^^^^^^^^^^^^^^^^

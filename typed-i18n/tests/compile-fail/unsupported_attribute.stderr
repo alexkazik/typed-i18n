@@ -1,0 +1,5 @@
+error: unsupported path
+ --> tests/compile-fail/unsupported_attribute.rs:6:1
+  |
+6 | #[typed_i18n(unknown = "unknown")]
+  | ^

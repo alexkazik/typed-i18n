@@ -20,6 +20,10 @@ rust-version = "1.64.0"
 [dependencies]
 typed-i18n-derive = { version = "0.6", path = "../typed-i18n-derive" }
 
+[dev-dependencies]
+rustversion = "1.0.17"
+trybuild = { version = "=1.0.89", features = ["diff"] }
+
 [features]
 default = ["alloc"]
 alloc = []
