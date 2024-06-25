@@ -39,12 +39,15 @@ impl Attributes {
 
         diagnostic.should_abort_if_dirty();
 
+        let parameters = parameters.unwrap_or(Parameters {
+            span,
+            filename: "*.*".to_string(),
+            separator: "_".to_string(),
+            global: None,
+        });
+
         Attributes {
-            parameters: parameters.unwrap_or(Parameters {
-                span,
-                filename: "*.*".to_string(),
-                separator: "_".to_string(),
-            }),
+            parameters,
             builders,
         }
     }

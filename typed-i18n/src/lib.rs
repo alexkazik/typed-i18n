@@ -52,6 +52,8 @@
 //! }
 //! ```
 //!
+//! A global stored language is also supported, see [global](#global) below.
+//!
 //! ## More builders
 //!
 //! Different generators add different code:
@@ -133,6 +135,7 @@
 //!
 //! - `filename`: the path to the translations, relative to the crate root (required).
 //! - `separator`: used for combining paths of a tree, default: `_`.
+//! - `global`: used for a global stored language, see [global](#global) below, default: not used.
 //!
 //! Example:
 //!
@@ -250,6 +253,7 @@
 //! * `name`: The name of the language in the messages file, defaults to the name of the value in `snake_case`.
 //! * `fallback`: A space and/or comma separated list of language names which defines which language
 //!   should be used when a message is missing. Default: all languages in listing order (not necessary in numerical order).
+//! * `default`: Is used for a [global](#global) storage. Only one language may be the default.
 //!
 //! Example:
 //!
@@ -266,6 +270,49 @@
 //!   EnAu,
 //! }
 //! ```
+//!
+//! # Global
+//!
+//! It is possible to generate a global language storage.
+//!
+//! Code:
+//! ```rust
+//! # use typed_i18n::TypedI18N;
+//! #[derive(Copy, Clone, TypedI18N)]
+//! #[typed_i18n(filename = "example.yaml", global = "atomic")]
+//! #[typed_i18n(builder = "static_str")]
+//! enum Language { En, #[typed_i18n(default = "true")] De }
+//! ```
+//!
+//! Generated code:
+//! ```rust
+//! # enum Language { En, De }
+//! impl Language {
+//! # } trait LanguageTest {
+//!     fn global() -> Self;
+//!     fn set_global(self);
+//! }
+//! ```
+//!
+//! Example usage:
+//! ```rust
+//! # use typed_i18n::TypedI18N;
+//! # #[derive(Copy, Clone, TypedI18N)]
+//! # #[typed_i18n(filename = "example.yaml", global = "atomic")]
+//! # #[typed_i18n(builder = "static_str")]
+//! # enum Language { En, #[typed_i18n(default = "true")] De }
+//! // de is the default
+//! assert_eq!(Language::global().hello_world(), "Hallo Welt");
+//! Language::En.set_global();
+//! assert_eq!(Language::global().hello_world(), "Hello world");
+//! ```
+//!
+//! The default language (either marked as such, see example above, or the first one) is initially
+//! stored as the global language.
+//!
+//! Currently `atomic` is the only implementation, which uses an [`AtomicU8`](::core::sync::atomic::AtomicU8)
+//! to store the language. The conversion does not depend on the representation of the enum.
+//! In case of more than 256 languages an [`AtomicUsize`](::core::sync::atomic::AtomicUsize) is used.
 //!
 //! # Features
 //!

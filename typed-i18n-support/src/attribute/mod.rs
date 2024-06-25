@@ -30,6 +30,12 @@ pub struct Parameters {
     pub filename: String,
     /// Used for joining key parts in serde tree input.
     pub separator: String,
+    pub global: Option<Global>,
+}
+
+#[derive(Copy, Clone)]
+pub enum Global {
+    Atomic,
 }
 
 impl Parameters {
@@ -39,6 +45,7 @@ impl Parameters {
             span: Span::call_site(),
             filename: filename.to_string(),
             separator: separator.to_string(),
+            global: None,
         }
     }
 }

@@ -49,6 +49,8 @@ fn print_hello(language: Language, name: Option<&str>){
 }
 ```
 
+A global stored language is also supported, see [global](#global) below.
+
 ### More builders
 
 Different generators add different code:
@@ -100,6 +102,7 @@ Fields:
 
 - `filename`: the path to the translations, relative to the crate root (required).
 - `separator`: used for combining paths of a tree, default: `_`.
+- `global`: used for a global stored language, see [global](#global) below, default: not used.
 
 Example:
 
@@ -217,6 +220,7 @@ The enum values can be annotated with:
 * `name`: The name of the language in the messages file, defaults to the name of the value in `snake_case`.
 * `fallback`: A space and/or comma separated list of language names which defines which language
   should be used when a message is missing. Default: all languages in listing order (not necessary in numerical order).
+* `default`: Is used for a [global](#global) storage. Only one language may be the default.
 
 Example:
 
@@ -232,6 +236,41 @@ enum Language {
   EnAu,
 }
 ```
+
+## Global
+
+It is possible to generate a global language storage.
+
+Code:
+```rust
+#[derive(Copy, Clone, TypedI18N)]
+#[typed_i18n(filename = "example.yaml", global = "atomic")]
+#[typed_i18n(builder = "static_str")]
+enum Language { En, #[typed_i18n(default = "true")] De }
+```
+
+Generated code:
+```rust
+impl Language {
+    fn global() -> Self;
+    fn set_global(self);
+}
+```
+
+Example usage:
+```rust
+// de is the default
+assert_eq!(Language::global().hello_world(), "Hallo Welt");
+Language::En.set_global();
+assert_eq!(Language::global().hello_world(), "Hello world");
+```
+
+The default language (either marked as such, see example above, or the first one) is initially
+stored as the global language.
+
+Currently `atomic` is the only implementation, which uses an `AtomicU8`
+to store the language. The conversion does not depend on the representation of the enum.
+In case of more than 256 languages an `AtomicUsize` is used.
 
 ## Features
 

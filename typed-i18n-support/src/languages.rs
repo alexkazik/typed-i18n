@@ -45,6 +45,7 @@ pub struct Language {
     pub ident: Ident,
     pub name: String,
     pub fallback: Vec<String>,
+    pub default: bool,
 }
 
 impl Language {
@@ -55,6 +56,7 @@ impl Language {
             ident: Ident::new(&name.to_case(Case::Pascal), Span::call_site()),
             name: name.to_string(),
             fallback: fallback.iter().map(ToString::to_string).collect(),
+            default: false,
         }
     }
 }
@@ -72,6 +74,7 @@ impl RawLanguages {
                 let mut has_attr = false;
                 let mut name = None;
                 let mut fallback = Vec::new();
+                let mut default = false;
 
                 for a in v.attrs {
                     let a_span = a.span();
@@ -88,6 +91,15 @@ impl RawLanguages {
                                     .map(ToString::to_string)
                                     .collect();
                             }
+                            if let Some((s, v)) = parser.remove("default") {
+                                match v.as_str() {
+                                    "true" => {
+                                        default = true;
+                                    }
+                                    "false" => {}
+                                    _ => diagnostic.emit_error(s, "unknown default value"),
+                                }
+                            }
                             parser.finish(diagnostic);
                         }
                     }
@@ -98,6 +110,7 @@ impl RawLanguages {
                     ident: v.ident,
                     name,
                     fallback,
+                    default,
                 });
             }
 
@@ -125,6 +138,14 @@ impl RawLanguages {
         if languages.is_empty() {
             diagnostic.emit_error(span, "no languages found");
             diagnostic.should_abort_if_dirty();
+        }
+        let defaults = languages.iter().filter(|l| l.default).count();
+        if defaults == 0 {
+            if let Some(l) = languages.iter_mut().next() {
+                l.default = true;
+            }
+        } else if defaults > 1 {
+            diagnostic.emit_error(span, "found more than one default language");
         }
         let names = languages
             .iter()

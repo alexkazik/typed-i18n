@@ -1,5 +1,5 @@
 use crate::attribute::builder::{BuilderVariant, InputConversion, InputVariant, StrConversion};
-use crate::attribute::{Attributes, Builder};
+use crate::attribute::{Attributes, Builder, Global};
 use crate::diagnostic::Diagnostic;
 use crate::languages::{Language, Languages};
 use crate::messages::message::Message;
@@ -7,12 +7,13 @@ use crate::messages::message_line::MessageLine;
 use crate::messages::messages::Messages;
 use crate::messages::param_type::ParamType;
 use crate::messages::piece::Piece;
+use convert_case::{Case, Casing};
 use indexmap::IndexMap;
 use proc_macro2::Ident;
 use proc_macro2::{Span, TokenStream};
 use quote::quote;
 use std::borrow::Cow;
-use syn::{Type, Visibility};
+use syn::{LitInt, Type, Visibility};
 
 impl Attributes {
     pub fn generate<D: Diagnostic>(
@@ -36,10 +37,15 @@ impl Attributes {
             builder.generate(diagnostic, vis, enum_ident, languages, messages, &mut inner);
         }
 
+        let global = self.parameters.global.map_or(TokenStream::new(), |g| {
+            g.generate(vis, enum_ident, languages)
+        });
+
         quote!(
             impl #enum_ident where #enum_ident : ::std::marker::Copy {
                 #inner
             }
+            #global
         )
     }
 }
@@ -292,5 +298,64 @@ impl Language {
             }
         }
         quote!(::typed_i18n::Builder::finish(#body))
+    }
+}
+
+impl Global {
+    #[allow(clippy::missing_panics_doc)]
+    fn generate(self, vis: &Visibility, enum_ident: &Ident, languages: &Languages) -> TokenStream {
+        match self {
+            Global::Atomic => {
+                let static_name = Ident::new(
+                    &format!(
+                        "STATIC_{}",
+                        enum_ident.to_string().to_case(Case::UpperSnake)
+                    ),
+                    enum_ident.span(),
+                );
+
+                let num_languages = languages.iter().count();
+
+                let atomic_type = if num_languages <= 256 {
+                    Ident::new("AtomicU8", Span::call_site())
+                } else {
+                    Ident::new("AtomicUsize", Span::call_site())
+                };
+
+                let mut inner_match = TokenStream::new();
+                let mut inner_table = TokenStream::new();
+                for (i, l) in languages.iter().enumerate() {
+                    let language_ident = &l.ident;
+                    let i = LitInt::new(&i.to_string(), Span::call_site());
+                    inner_match.extend(quote! {Self::#language_ident => #i,});
+                    inner_table.extend(quote! {Self::#language_ident,});
+                }
+
+                let default_language = languages
+                    .iter()
+                    .enumerate()
+                    .find(|(_, l)| l.default)
+                    .unwrap()
+                    .0;
+                let default_language =
+                    LitInt::new(&default_language.to_string(), Span::call_site());
+
+                quote! {
+                    static #static_name: ::core::sync::atomic::#atomic_type = ::core::sync::atomic::#atomic_type::new(#default_language);
+
+                    impl #enum_ident {
+                        const FROM_INDEX : &'static [Self; #num_languages] = &[#inner_table];
+
+                        #vis fn set_global(self) {
+                            #static_name.store(match self { #inner_match }, ::core::sync::atomic::Ordering::Relaxed);
+                        }
+
+                        #vis fn global() -> Self {
+                            Self::FROM_INDEX[#static_name.load(::core::sync::atomic::Ordering::Relaxed) as usize]
+                        }
+                    }
+                }
+            }
+        }
     }
 }
