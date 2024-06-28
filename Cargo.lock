@@ -273,7 +273,7 @@ dependencies = [
 
 [[package]]
 name = "typed-i18n"
-version = "0.6.0"
+version = "0.6.1"
 dependencies = [
  "rustversion",
  "trybuild",
@@ -282,7 +282,7 @@ dependencies = [
 
 [[package]]
 name = "typed-i18n-derive"
-version = "0.6.0"
+version = "0.7.1"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -293,7 +293,7 @@ dependencies = [
 
 [[package]]
 name = "typed-i18n-support"
-version = "0.6.0"
+version = "0.7.1"
 dependencies = [
  "convert_case",
  "indexmap",
