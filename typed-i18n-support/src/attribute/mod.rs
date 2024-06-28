@@ -9,10 +9,10 @@ pub(crate) mod parser;
 
 pub struct Attributes {
     pub parameters: Parameters,
-    pub builders: Vec<Builder>,
+    pub(crate) builders: Vec<Builder>,
 }
 
-pub struct Builder {
+pub(crate) struct Builder {
     pub(crate) span: Span,
     #[allow(clippy::struct_field_names)] // because of a false positive
     pub(crate) builder_variant: BuilderVariant,

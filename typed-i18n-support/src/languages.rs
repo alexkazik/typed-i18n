@@ -16,6 +16,7 @@ impl Languages {
     }
 }
 
+#[allow(clippy::into_iter_without_iter)] // because of a false positive
 impl<'a> IntoIterator for &'a Languages {
     type Item = &'a Language;
     type IntoIter = Iter<'a, Language>;

@@ -1,5 +1,5 @@
 use crate::attribute::builder::{BuilderVariant, InputConversion, InputVariant, StrConversion};
-use crate::attribute::Builder;
+use crate::attribute::{Attributes, Builder};
 use crate::diagnostic::Diagnostic;
 use crate::languages::{Language, Languages};
 use crate::messages::message::Message;
@@ -14,8 +14,38 @@ use quote::quote;
 use std::borrow::Cow;
 use syn::{Type, Visibility};
 
-impl Builder {
+impl Attributes {
     pub fn generate<D: Diagnostic>(
+        &self,
+        diagnostic: &mut D,
+        vis: &Visibility,
+        enum_ident: &Ident,
+        relative_path: &str,
+        languages: &Languages,
+        messages: &Messages,
+    ) -> TokenStream {
+        diagnostic.should_abort_if_dirty();
+
+        let mut inner = TokenStream::new();
+
+        inner.extend(quote!(
+            const _DEPENDENCY: &'static str = include_str!(#relative_path);
+        ));
+
+        for builder in &self.builders {
+            builder.generate(diagnostic, vis, enum_ident, languages, messages, &mut inner);
+        }
+
+        quote!(
+            impl #enum_ident where #enum_ident : ::std::marker::Copy {
+                #inner
+            }
+        )
+    }
+}
+
+impl Builder {
+    fn generate<D: Diagnostic>(
         &self,
         diagnostic: &mut D,
         vis: &Visibility,
@@ -24,8 +54,6 @@ impl Builder {
         messages: &Messages,
         output: &mut TokenStream,
     ) {
-        diagnostic.should_abort_if_dirty();
-
         let prefix = self.prefix.as_deref().unwrap_or("");
 
         if (self.builder_variant == BuilderVariant::StaticStr
@@ -150,10 +178,9 @@ impl Builder {
             } else if self.builder_variant == BuilderVariant::Generic {
                 output.extend(quote!(where #builder_type : ::typed_i18n::Builder,));
             }
-            let body = generate_body(
+            let body = languages.generate(
                 builder_type,
                 enum_ident,
-                languages,
                 return_static_str,
                 self.str_conversion,
                 self.input_conversion,
@@ -164,102 +191,106 @@ impl Builder {
     }
 }
 
-fn generate_body(
-    builder_type: &Type,
-    enum_ident: &Ident,
-    languages: &Languages,
-    return_static_str: bool,
-    str_conversion: StrConversion,
-    input_conversion: InputConversion,
-    m: &IndexMap<Cow<'_, str>, MessageLine<'_>>,
-) -> TokenStream {
-    if m.len() == 1 {
-        return generate_lang(
-            builder_type,
-            languages.iter().next().expect("no language!"),
-            return_static_str,
-            str_conversion,
-            input_conversion,
-            m,
-        );
-    }
+impl Languages {
+    fn generate(
+        &self,
+        builder_type: &Type,
+        enum_ident: &Ident,
+        return_static_str: bool,
+        str_conversion: StrConversion,
+        input_conversion: InputConversion,
+        m: &IndexMap<Cow<'_, str>, MessageLine<'_>>,
+    ) -> TokenStream {
+        if m.len() == 1 {
+            return self.iter().next().expect("no language!").generate(
+                builder_type,
+                return_static_str,
+                str_conversion,
+                input_conversion,
+                m,
+            );
+        }
 
-    let mut body = TokenStream::new();
-    for l in languages {
-        let gl = generate_lang(
-            builder_type,
-            l,
-            return_static_str,
-            str_conversion,
-            input_conversion,
-            m,
-        );
-        let lang_ident = &l.ident;
-        body.extend(quote!(#enum_ident :: #lang_ident => {#gl},));
+        let mut body = TokenStream::new();
+        for l in self {
+            let gl = l.generate(
+                builder_type,
+                return_static_str,
+                str_conversion,
+                input_conversion,
+                m,
+            );
+            let lang_ident = &l.ident;
+            body.extend(quote!(#enum_ident :: #lang_ident => {#gl},));
+        }
+        quote!(match self { #body })
     }
-    quote!(match self { #body })
 }
 
-fn generate_lang(
-    builder_type: &Type,
-    language: &Language,
-    return_static_str: bool,
-    str_conversion: StrConversion,
-    input_conversion: InputConversion,
-    m: &IndexMap<Cow<'_, str>, MessageLine<'_>>,
-) -> TokenStream {
-    let m = language
-        .fallback
-        .iter()
-        .find_map(|l| m.get(l.as_str()))
-        .expect("couldn't find a value")
-        .borrow_pieces()
-        .as_slice();
+impl Language {
+    fn generate(
+        &self,
+        builder_type: &Type,
+        return_static_str: bool,
+        str_conversion: StrConversion,
+        input_conversion: InputConversion,
+        m: &IndexMap<Cow<'_, str>, MessageLine<'_>>,
+    ) -> TokenStream {
+        let m = self
+            .fallback
+            .iter()
+            .find_map(|l| m.get(l.as_str()))
+            .expect("couldn't find a value")
+            .borrow_pieces()
+            .as_slice();
 
-    if return_static_str {
-        return match m.first() {
-            None => quote!(""),
-            Some(Piece::Text(t)) => quote!(#t),
-            _ => panic!("invalid return_static_str"),
-        };
-    }
-    if let &[Piece::Text(t)] = &m {
-        return quote!(<#builder_type as ::typed_i18n::Builder>::const_str(#t));
-    }
-    if m.is_empty() {
-        return quote!(<#builder_type as ::typed_i18n::Builder>::empty());
-    }
-    let mut body = quote!(<#builder_type as ::typed_i18n::Builder>::new());
-    for p in m {
-        match p {
-            Piece::Text(t) => {
-                body = quote!(::typed_i18n::Builder::push_const_str(#body, #t));
-            }
-            Piece::Param(p, ParamType::Str) => {
-                let p = Ident::new(p, Span::call_site());
-                body = match str_conversion {
-                    StrConversion::Ref => quote!(::typed_i18n::Builder::push_str(#body, #p)),
-                    StrConversion::AsRef => {
-                        quote!(::typed_i18n::Builder::push_str(#body, #p.as_ref()))
-                    }
-                };
-            }
-            Piece::Param(p, ParamType::Typed) => {
-                let p = Ident::new(p, Span::call_site());
-                body = match input_conversion {
-                    InputConversion::Value => {
-                        quote!(::typed_i18n::BuilderFromValue::push(#body, #p))
-                    }
-                    InputConversion::Into => {
-                        quote!(::typed_i18n::BuilderFromValue::push(#body, #p.into()))
-                    }
-                    InputConversion::Ref => quote!(::typed_i18n::BuilderFromRef::push(#body, #p)),
-                    InputConversion::AsRef => {
-                        quote!(::typed_i18n::BuilderFromRef::push(#body, #p.as_ref()))
-                    }
-                };
+        if return_static_str {
+            return match m.first() {
+                None => quote!(""),
+                Some(Piece::Text(t)) => quote!(#t),
+                _ => panic!("invalid return_static_str"),
+            };
+        }
+        if let &[Piece::Text(t)] = &m {
+            return quote!(<#builder_type as ::typed_i18n::Builder>::const_str(#t));
+        }
+        if m.is_empty() {
+            return quote!(<#builder_type as ::typed_i18n::Builder>::empty());
+        }
+        let mut body = quote!(<#builder_type as ::typed_i18n::Builder>::new());
+        for p in m {
+            match p {
+                Piece::Text(t) => {
+                    body = quote!(::typed_i18n::Builder::push_const_str(#body, #t));
+                }
+                Piece::Param(p, ParamType::Str) => {
+                    let p = Ident::new(p, Span::call_site());
+                    body = match str_conversion {
+                        StrConversion::Ref => quote!(::typed_i18n::Builder::push_str(#body, #p)),
+                        StrConversion::AsRef => {
+                            quote!(::typed_i18n::Builder::push_str(#body, #p.as_ref()))
+                        }
+                    };
+                }
+                Piece::Param(p, ParamType::Typed) => {
+                    let p = Ident::new(p, Span::call_site());
+                    body = match input_conversion {
+                        InputConversion::Value => {
+                            quote!(::typed_i18n::BuilderFromValue::push(#body, #p))
+                        }
+                        InputConversion::Into => {
+                            quote!(::typed_i18n::BuilderFromValue::push(#body, #p.into()))
+                        }
+                        InputConversion::Ref => {
+                            quote!(::typed_i18n::BuilderFromRef::push(#body, #p))
+                        }
+                        InputConversion::AsRef => {
+                            quote!(::typed_i18n::BuilderFromRef::push(#body, #p.as_ref()))
+                        }
+                    };
+                }
             }
         }
+        quote!(::typed_i18n::Builder::finish(#body))
     }
-    quote!(::typed_i18n::Builder::finish(#body))
 }

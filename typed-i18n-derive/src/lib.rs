@@ -6,7 +6,6 @@
 
 use proc_macro::TokenStream;
 use proc_macro_error::{abort, proc_macro_error};
-use quote::quote;
 use std::env;
 use std::path::PathBuf;
 use syn::spanned::Spanned;
@@ -49,7 +48,6 @@ pub fn typed_i18n(item: TokenStream) -> TokenStream {
         &contents,
     );
 
-    let mut inner = proc_macro2::TokenStream::new();
     let current_dir = env::current_dir().expect("Unable to get current directory");
 
     let relative_path = current_dir
@@ -57,25 +55,15 @@ pub fn typed_i18n(item: TokenStream) -> TokenStream {
         .to_str()
         .expect("path contains invalid unicode")
         .to_string();
-    inner.extend(quote!(
-        const _DEPENDENCY: &'static str = include_str!(#relative_path);
-    ));
-    for builder in &attributes.builders {
-        builder.generate(
+
+    attributes
+        .generate(
             diagnostic,
             &input.vis,
             &input.ident,
+            &relative_path,
             &languages,
             &messages,
-            &mut inner,
-        );
-    }
-
-    let enum_ident = input.ident;
-    quote!(
-        impl #enum_ident where #enum_ident : ::std::marker::Copy{
-            #inner
-        }
-    )
-    .into()
+        )
+        .into()
 }
