@@ -10,6 +10,7 @@ pub struct Message<'a> {
     #[serde(skip)]
     pub(crate) params: Vec<(String, ParamType)>,
     #[serde(flatten)]
+    #[allow(clippy::struct_field_names)]
     pub(crate) message_lines: IndexMap<Cow<'a, str>, MessageLine<'a>>,
 }
 

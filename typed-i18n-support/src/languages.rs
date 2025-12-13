@@ -147,10 +147,7 @@ impl RawLanguages {
         } else if defaults > 1 {
             diagnostic.emit_error(span, "found more than one default language");
         }
-        let names = languages
-            .iter()
-            .map(|v| v.name.to_string())
-            .collect::<Vec<_>>();
+        let names = languages.iter().map(|v| v.name.clone()).collect::<Vec<_>>();
         let mut seen_languages = HashSet::new();
         for v in &mut languages {
             if !seen_languages.insert(&v.name) {

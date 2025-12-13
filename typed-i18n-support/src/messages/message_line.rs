@@ -11,7 +11,7 @@ pub(crate) struct MessageLine<'a> {
     pub(crate) pieces: Vec<Piece<'this>>,
 }
 
-impl<'a> ::serde::Serialize for MessageLine<'a> {
+impl ::serde::Serialize for MessageLine<'_> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,

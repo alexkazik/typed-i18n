@@ -60,7 +60,7 @@ impl<'a> RawMessages<'a> {
     }
 }
 
-impl<'a> Messages<'a> {
+impl Messages<'_> {
     #[must_use]
     pub fn to_lrc(&self) -> String {
         let mut output = String::new();

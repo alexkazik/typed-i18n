@@ -3,8 +3,6 @@
 use crate::derive::Language;
 use std::borrow::Cow;
 
-mod common;
-
 mod derive {
     #![no_implicit_prelude]
 

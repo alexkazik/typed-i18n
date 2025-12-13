@@ -167,7 +167,7 @@ All the builders below are built-in. The `input` must not be set for these. Alwa
 * `String`
 * `Cow<'static, str>`
 * `_`: The functions will be generic over the builder type. This is sometimes not helpful,
-       e.g. when `.into()` or `.as_ref()` will be called on the result of the function.
+  e.g. when `.into()` or `.as_ref()` will be called on the result of the function.
 
 All except `static_str` and `_` require the feature `alloc` (enabled by default) and that `String` or `Cow` is in scope.
 
@@ -201,13 +201,13 @@ a generic builder type.
 How to convert the types inputs:
 
 * `value`: The input type as parameter:
-            `fn html_hello_with_icon(self, name: &str, icon: Input) -> <HtmlBuilder as BuilderFromValue>::Output`
+  `fn html_hello_with_icon(self, name: &str, icon: Input) -> <HtmlBuilder as BuilderFromValue>::Output`
 * `into` (default): Something that can be converted into the input type:
-            `fn html_hello_with_icon<T1: Into<Input>>(self, name: &str, icon: T1) -> <HtmlBuilder as BuilderFromValue>::Output`
+  `fn html_hello_with_icon<T1: Into<Input>>(self, name: &str, icon: T1) -> <HtmlBuilder as BuilderFromValue>::Output`
 * `ref`: A reference to the input type:
-            `fn html_hello_with_icon(self, name: &str, icon: &Input) -> <HtmlBuilder as BuilderFromRef>::Output`
+  `fn html_hello_with_icon(self, name: &str, icon: &Input) -> <HtmlBuilder as BuilderFromRef>::Output`
 * `as_ref`: Something that can be converted into a reference to the input type:
-            `fn html_hello_with_icon<T1: AsRef<Input>>(self, name: &str, icon: T1) -> <HtmlBuilder as BuilderFromRef>::Output`
+  `fn html_hello_with_icon<T1: AsRef<Input>>(self, name: &str, icon: T1) -> <HtmlBuilder as BuilderFromRef>::Output`
 
 For `value` and `into` to work the builder must also implement [`BuilderFromValue`].
 
