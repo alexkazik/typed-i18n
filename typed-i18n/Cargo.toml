@@ -1,6 +1,6 @@
 [package]
 name = "typed-i18n"
-version = "0.6.1"
+version = "0.6.2"
 authors = ["ALeX Kazik <alex@kazik.de>"]
 edition = "2021"
 description = "A type safe i18n system"
@@ -18,7 +18,7 @@ readme = "README.md"
 rust-version = "1.64.0"
 
 [dependencies]
-typed-i18n-derive = { version = "=0.7.1", path = "../typed-i18n-derive" }
+typed-i18n-derive = { version = "=0.7.2", path = "../typed-i18n-derive" }
 
 [dev-dependencies]
 rustversion = "1.0.17"

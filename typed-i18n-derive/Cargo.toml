@@ -1,6 +1,6 @@
 [package]
 name = "typed-i18n-derive"
-version = "0.7.1"
+version = "0.7.2"
 authors = ["ALeX Kazik <alex@kazik.de>"]
 edition = "2021"
 description = "Derive macro for typed-i18n"
@@ -19,7 +19,7 @@ proc-macro-error = { version = "1.0.4", default-features = false }
 proc-macro2 = "1"
 quote = "1"
 syn = { version = "2", default-features = false, features = ["derive", "parsing", "printing", "proc-macro"] }
-typed-i18n-support = { version = "=0.7.1", path = "../typed-i18n-support" }
+typed-i18n-support = { version = "=0.7.2", path = "../typed-i18n-support" }
 
 [features]
 default = ["alloc"]

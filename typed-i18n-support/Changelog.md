@@ -1,5 +1,9 @@
 # Changelog for typed-i18n-support
 
+## 0.7.2 -- 2025-12-13
+
+* Allow } in text
+
 ## 0.7.1 -- 2024-06-28
 
 * Optimizations and cleanup
