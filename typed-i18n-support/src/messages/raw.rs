@@ -132,31 +132,27 @@ impl<'a> RawMessages<'a> {
                     pos += 2;
                     start = pos;
                 }
-            } else if msg[pos] == b'}' {
-                if !in_param || pos == start {
-                    has_error = true;
-                    in_param = false;
-                    pos += 1;
-                } else {
-                    // this is safe because it's only cut on ascii chars
-                    let p_name = unsafe { from_utf8_unchecked(&msg[start..pos]) };
-                    if syn::parse_str::<Ident>(p_name).is_err() {
-                        diagnostic.emit_error(
-                            span,
-                            format!(r#"invalid parameter name "{p_name}" in {k}.{lang}"#),
-                        );
-                    } else if !t_params.insert(p_name) {
-                        diagnostic.emit_error(
-                            span,  format!(
+            } else if msg[pos] == b'}' && in_param {
+                // this is safe because it's only cut on ascii chars
+                let p_name = unsafe { from_utf8_unchecked(&msg[start..pos]) };
+                if syn::parse_str::<Ident>(p_name).is_err() {
+                    diagnostic.emit_error(
+                        span,
+                        format!(r#"invalid parameter name "{p_name}" in {k}.{lang}"#),
+                    );
+                } else if !t_params.insert(p_name) {
+                    diagnostic.emit_error(
+                        span,
+                        format!(
                             r#"duplicate use of a typed parameter: "{p_name}" in key {k}.{lang}"#
-                        ));
-                    } else {
-                        r.push(Piece::Param(p_name, param_type));
-                    }
-                    in_param = false;
-                    pos += 1;
-                    start = pos;
+                        ),
+                    );
+                } else {
+                    r.push(Piece::Param(p_name, param_type));
                 }
+                in_param = false;
+                pos += 1;
+                start = pos;
             } else {
                 pos += 1;
             }

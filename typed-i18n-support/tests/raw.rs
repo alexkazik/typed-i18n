@@ -123,16 +123,3 @@ fn parse_error2() {
     );
     diagnostic.assert(&["Span: parse error in hello.en"]);
 }
-
-#[test]
-fn parse_error3() {
-    let diagnostic = &mut Simulated::new();
-    let _messages = Messages::parse(
-        diagnostic,
-        Common::span(),
-        &Common::parameters_json(),
-        &Common::languages_en_de(),
-        r#"{"hello": {"en": "Hello }"} }"#,
-    );
-    diagnostic.assert(&["Span: parse error in hello.en"]);
-}
