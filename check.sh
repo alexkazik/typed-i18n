@@ -12,7 +12,7 @@ TOOLCHAIN=${1:-+1.64.0}
 echo Using toolchain $TOOLCHAIN
 
 # use crates available at this rust version
-cargo $TOOLCHAIN update
+# cargo $TOOLCHAIN update # disabled because they don't work with this version of rust...
 
 # builds (alloc, nothing)
 cargo $TOOLCHAIN build --release --all-features --tests || exit 1
