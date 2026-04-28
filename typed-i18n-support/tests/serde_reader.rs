@@ -1,9 +1,12 @@
+#![cfg(any(feature = "json", feature = "yaml"))]
+
 mod common;
 
 use crate::common::Common;
 use typed_i18n_support::diagnostic::Simulated;
 use typed_i18n_support::messages::Messages;
 
+#[cfg(feature = "json")]
 #[test]
 fn bad_version() {
     let diagnostic = &mut Simulated::new();
@@ -17,6 +20,7 @@ fn bad_version() {
     diagnostic.assert(&["Span: _version is not 2"]);
 }
 
+#[cfg(feature = "json")]
 #[test]
 fn invalid_json() {
     let diagnostic = &mut Simulated::new();
@@ -32,6 +36,7 @@ fn invalid_json() {
     ]);
 }
 
+#[cfg(feature = "yaml")]
 #[test]
 fn invalid_yaml() {
     let diagnostic = &mut Simulated::new();

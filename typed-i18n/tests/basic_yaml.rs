@@ -1,3 +1,5 @@
+#![cfg(feature = "yaml")]
+
 use crate::common::{Element, Output};
 use crate::derive::Language;
 

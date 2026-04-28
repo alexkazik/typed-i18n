@@ -56,6 +56,9 @@ echo Using toolchain $TOOLCHAIN
 # tests
 cargo $TOOLCHAIN test --locked --release --all-features -- --include-ignored
 cargo $TOOLCHAIN test --locked --release --no-default-features -- --include-ignored
+cargo $TOOLCHAIN test --locked --release --no-default-features --features alloc -- --include-ignored
+cargo $TOOLCHAIN test --locked --release --no-default-features --features json -- --include-ignored
+cargo $TOOLCHAIN test --locked --release --no-default-features --features yaml -- --include-ignored
 
 # build the examples
 ( cd examples && cargo $TOOLCHAIN build )

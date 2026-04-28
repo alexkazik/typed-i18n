@@ -20,5 +20,7 @@ syn = { version = "2", default-features = false, features = ["derive", "parsing"
 typed-i18n-support = { version = "=0.7.2", path = "../typed-i18n-support", default-features = false }
 
 [features]
-default = ["alloc"]
+default = ["alloc", "json", "yaml"]
 alloc = []
+json = ["typed-i18n-support/json"]
+yaml = ["typed-i18n-support/yaml"]

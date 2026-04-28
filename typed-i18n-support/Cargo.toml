@@ -13,13 +13,18 @@ rust-version = "1.85.0"
 
 [dependencies]
 convert_case = { version = "0.11", default-features = false }
-indexmap = { version = "2", default-features = false, features = ["serde"] }
+indexmap = { version = "2", default-features = false, features = ["serde", "std"] }
 ouroboros = { version = "0.18.2", default-features = false }
 proc-macro-error = { version = "1.0.4", default-features = false }
 proc-macro2 = { version = "1", default-features = false }
 quote = { version = "1.0.26", default-features = false }
-serde = { version = "1.0.157", default-features = false, features = ["derive"] }
-serde_json = { version = "1.0.73", default-features = false, features = ["alloc"] }
-serde_yaml = { version = "0.9.22", default-features = false }
+serde = { version = "1.0.157", default-features = false, features = ["alloc", "derive"], optional = true }
+serde_json = { version = "1.0.73", default-features = false, features = ["alloc"], optional = true }
+serde_yaml = { version = "0.9.22", default-features = false, optional = true }
 syn = { version = "2", default-features = false, features = ["derive", "parsing", "printing", "proc-macro"] }
 unicode-ident = { version = "1", default-features = false }
+
+[features]
+default = ["json", "yaml"]
+json = ["dep:serde", "dep:serde_json", "indexmap/serde"]
+yaml = ["dep:serde", "dep:serde_yaml", "indexmap/serde"]

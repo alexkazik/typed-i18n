@@ -1,6 +1,5 @@
 use crate::messages::piece::Piece;
 use ouroboros::self_referencing;
-use serde::Serializer;
 use std::borrow::Cow;
 
 #[self_referencing]
@@ -11,10 +10,11 @@ pub(crate) struct MessageLine<'a> {
     pub(crate) pieces: Vec<Piece<'this>>,
 }
 
+#[cfg(any(feature = "yaml", feature = "json"))]
 impl ::serde::Serialize for MessageLine<'_> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: Serializer,
+        S: ::serde::Serializer,
     {
         serializer.serialize_str(self.borrow_line())
     }

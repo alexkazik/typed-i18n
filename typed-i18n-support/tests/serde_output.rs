@@ -1,3 +1,4 @@
+#![cfg(feature = "json")]
 use crate::common::Common;
 use typed_i18n_support::messages::Messages;
 

@@ -3,6 +3,7 @@
 ## upcoming
 
 * Bump to 2024 edition, msrv 1.85
+* Add compile-time features
 
 ## 0.7.2 -- 2025-12-13
 

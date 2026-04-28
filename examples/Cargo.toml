@@ -4,6 +4,6 @@ edition = "2024"
 
 [dependencies]
 yew = "0.21.0"
-typed-i18n = { path = "../typed-i18n" }
+typed-i18n = { path = "../typed-i18n", default-features = false, features = ["yaml"] }
 
 [workspace]

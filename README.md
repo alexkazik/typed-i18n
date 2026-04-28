@@ -274,8 +274,28 @@ In case of more than 256 languages an `AtomicUsize` is used.
 
 ## Features
 
+### Library-Features:
 - `alloc`, enabled by default: Provide Builder implementations for `String` and `Cow<'static, str>`, also support `mixed_str`.
 
 The library is always `no_std`.
+
+### Derive-Features:
+- `json`, enabled by default: Provides json file support.
+- `yaml`, enabled by default: Provides yaml file support.
+
+### How to disable features:
+
+To not use `alloc` but all file formats:
+```toml
+[dependencies]
+typed-i18n = { version = "0.6", default-features = false, features = ["json", "yaml"] }
+```
+
+If only `lrc` is used, the `json`, `yaml` (and serde) derive dependencies can be dropped:
+```toml
+[dependencies]
+typed-i18n = { version = "0.6", default-features = false, features = ["alloc"] }
+```
+If `alloc` is not required, even that can be removed.
 
 <!-- cargo-rdme end -->

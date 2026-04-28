@@ -3,6 +3,7 @@ use crate::diagnostic::{Diagnostic, Simulated};
 use crate::languages::Languages;
 use crate::messages::message::Message;
 use crate::messages::raw::RawMessages;
+#[cfg(any(feature = "yaml", feature = "json"))]
 use crate::messages::serde::{MessagesTreeInner, SerdeInput};
 use indexmap::IndexMap;
 use proc_macro2::Span;
@@ -10,10 +11,10 @@ use std::borrow::Cow;
 use std::ffi::OsStr;
 use std::path::Path;
 
-#[derive(::serde::Serialize)]
+#[cfg_attr(any(feature = "yaml", feature = "json"), derive(::serde::Serialize))]
 pub struct Messages<'a> {
     _version: usize,
-    #[serde(flatten)]
+    #[cfg_attr(any(feature = "yaml", feature = "json"), serde(flatten))]
     inner: IndexMap<Cow<'a, str>, Message<'a>>,
 }
 
@@ -64,24 +65,52 @@ impl<'a> Messages<'a> {
             .and_then(OsStr::to_str)
         {
             Some("lrc") => RawMessages::parse_lrc(diagnostic, span, content),
-            Some("yaml") => match serde_yaml::from_str::<SerdeInput>(content) {
-                Ok(key_map) => {
-                    RawMessages::parse_serde(diagnostic, span, &parameters.separator, key_map)
+            Some("yaml") => {
+                #[cfg(feature = "yaml")]
+                {
+                    match serde_yaml::from_str::<SerdeInput>(content) {
+                        Ok(key_map) => RawMessages::parse_serde(
+                            diagnostic,
+                            span,
+                            &parameters.separator,
+                            key_map,
+                        ),
+                        Err(err) => {
+                            diagnostic.emit_error(span, format!("Invalid YAML format, {err}"));
+                            RawMessages(IndexMap::default())
+                        }
+                    }
                 }
-                Err(err) => {
-                    diagnostic.emit_error(span, format!("Invalid YAML format, {err}"));
+                #[cfg(not(feature = "yaml"))]
+                {
+                    diagnostic
+                        .emit_error(span, "YAML format is disabled, please enable feature yaml");
                     RawMessages(IndexMap::default())
                 }
-            },
-            Some("json") => match serde_json::from_str::<SerdeInput>(content) {
-                Ok(key_map) => {
-                    RawMessages::parse_serde(diagnostic, span, &parameters.separator, key_map)
+            }
+            Some("json") => {
+                #[cfg(feature = "json")]
+                {
+                    match serde_json::from_str::<SerdeInput>(content) {
+                        Ok(key_map) => RawMessages::parse_serde(
+                            diagnostic,
+                            span,
+                            &parameters.separator,
+                            key_map,
+                        ),
+                        Err(err) => {
+                            diagnostic.emit_error(span, format!("Invalid JSON format, {err}"));
+                            RawMessages(IndexMap::default())
+                        }
+                    }
                 }
-                Err(err) => {
-                    diagnostic.emit_error(span, format!("Invalid JSON format, {err}"));
+                #[cfg(not(feature = "json"))]
+                {
+                    diagnostic
+                        .emit_error(span, "JSON format is disabled, please enable feature json");
                     RawMessages(IndexMap::default())
                 }
-            },
+            }
             Some(ext) => {
                 diagnostic.emit_error(span, format!("Unsupported file extension {ext:?}"));
                 RawMessages(IndexMap::default())
@@ -117,6 +146,7 @@ impl<'a, 'b: 'a> Iterator for MessagesIter<'a, 'b> {
 }
 
 /// Helper to save the messages in tree form with serde.
+#[cfg(any(feature = "yaml", feature = "json"))]
 #[derive(::serde::Serialize)]
 pub struct MessagesAsTree<'a> {
     pub(super) _version: usize,

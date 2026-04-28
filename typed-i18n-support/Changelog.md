@@ -5,6 +5,7 @@
 * Bump to 2024 edition, msrv 1.85
 * Remove unsafe code
 * Improve warning
+* Add compile-time features
 
 ## 0.7.2 -- 2025-12-13
 

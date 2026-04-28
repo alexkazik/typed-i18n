@@ -24,10 +24,12 @@ impl Common {
         Parameters::run_new("_.lrc", "_")
     }
 
+    #[cfg(feature = "json")]
     pub fn parameters_json() -> Parameters {
         Parameters::run_new("_.json", "_")
     }
 
+    #[cfg(feature = "yaml")]
     pub fn parameters_yaml() -> Parameters {
         Parameters::run_new("_.yaml", "_")
     }

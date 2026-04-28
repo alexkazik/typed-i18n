@@ -20,7 +20,7 @@
 //!
 //! Code:
 //! ```rust
-//! # #[cfg(feature = "alloc")] {
+//! # #[cfg(all(feature = "yaml", feature = "alloc"))] {
 //! # use typed_i18n::TypedI18N;
 //! #[derive(Copy, Clone, TypedI18N)]
 //! #[typed_i18n(filename = "example.yaml")]
@@ -61,7 +61,7 @@
 //!
 //! Different generators add different code:
 //! ```rust
-//! # #[cfg(feature = "alloc")] {
+//! # #[cfg(all(feature = "yaml", feature = "alloc"))] {
 //! # use typed_i18n::TypedI18N;
 //! # #[derive(Copy, Clone, TypedI18N)]
 //! # #[typed_i18n(filename = "example.yaml")]
@@ -93,6 +93,7 @@
 //! ```
 //!
 //! ```rust
+//! # #[cfg(feature = "yaml")] {
 //! # use typed_i18n::{Builder, TypedI18N};
 //! # struct HtmlBuilder;
 //! # struct Html;
@@ -107,6 +108,7 @@
 //! # #[typed_i18n(filename = "example.yaml")]
 //! #[typed_i18n(builder = "HtmlBuilder", input = "Html", prefix = "html_")]
 //! # enum Language { En, De }
+//! # }
 //! ```
 //!
 //! Generated code:
@@ -263,7 +265,7 @@
 //! Example:
 //!
 //! ```rust
-//! # #[cfg(feature = "alloc")] {
+//! # #[cfg(all(feature = "yaml", feature = "alloc"))] {
 //! # use typed_i18n::TypedI18N;
 //! #[derive(Copy, Clone, TypedI18N)]
 //! #[typed_i18n(filename = "example.yaml")]
@@ -284,11 +286,13 @@
 //!
 //! Code:
 //! ```rust
+//! # #[cfg(feature = "yaml")] {
 //! # use typed_i18n::TypedI18N;
 //! #[derive(Copy, Clone, TypedI18N)]
 //! #[typed_i18n(filename = "example.yaml", global = "atomic")]
 //! #[typed_i18n(builder = "static_str")]
 //! enum Language { En, #[typed_i18n(default = "true")] De }
+//! # }
 //! ```
 //!
 //! Generated code:
@@ -303,6 +307,7 @@
 //!
 //! Example usage:
 //! ```rust
+//! # #[cfg(feature = "yaml")] {
 //! # use typed_i18n::TypedI18N;
 //! # #[derive(Copy, Clone, TypedI18N)]
 //! # #[typed_i18n(filename = "example.yaml", global = "atomic")]
@@ -312,6 +317,7 @@
 //! assert_eq!(Language::global().hello_world(), "Hallo Welt");
 //! Language::En.set_global();
 //! assert_eq!(Language::global().hello_world(), "Hello world");
+//! # }
 //! ```
 //!
 //! The default language (either marked as such, see example above, or the first one) is initially
@@ -323,9 +329,29 @@
 //!
 //! # Features
 //!
+//! ## Library-Features:
 //! - `alloc`, enabled by default: Provide Builder implementations for `String` and `Cow<'static, str>`, also support `mixed_str`.
 //!
 //! The library is always `no_std`.
+//!
+//! ## Derive-Features:
+//! - `json`, enabled by default: Provides json file support.
+//! - `yaml`, enabled by default: Provides yaml file support.
+//!
+//! ## How to disable features:
+//!
+//! To not use `alloc` but all file formats:
+//! ```toml
+//! [dependencies]
+//! typed-i18n = { version = "0.6", default-features = false, features = ["json", "yaml"] }
+//! ```
+//!
+//! If only `lrc` is used, the `json`, `yaml` (and serde) derive dependencies can be dropped:
+//! ```toml
+//! [dependencies]
+//! typed-i18n = { version = "0.6", default-features = false, features = ["alloc"] }
+//! ```
+//! If `alloc` is not required, even that can be removed.
 
 #[cfg(feature = "alloc")]
 mod alloc;

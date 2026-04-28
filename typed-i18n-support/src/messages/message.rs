@@ -3,13 +3,13 @@ use crate::messages::param_type::ParamType;
 use indexmap::IndexMap;
 use std::borrow::Cow;
 
-#[derive(::serde::Serialize)]
+#[cfg_attr(any(feature = "yaml", feature = "json"), derive(::serde::Serialize))]
 pub struct Message<'a> {
-    #[serde(skip)]
+    #[cfg_attr(any(feature = "yaml", feature = "json"), serde(skip))]
     pub(crate) path: Vec<Cow<'a, str>>,
-    #[serde(skip)]
+    #[cfg_attr(any(feature = "yaml", feature = "json"), serde(skip))]
     pub(crate) params: Vec<(String, ParamType)>,
-    #[serde(flatten)]
+    #[cfg_attr(any(feature = "yaml", feature = "json"), serde(flatten))]
     #[allow(clippy::struct_field_names)]
     pub(crate) message_lines: IndexMap<Cow<'a, str>, MessageLine<'a>>,
 }
