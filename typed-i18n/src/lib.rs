@@ -19,11 +19,13 @@
 //!
 //! Code:
 //! ```rust
+//! # #[cfg(feature = "alloc")] {
 //! # use typed_i18n::TypedI18N;
 //! #[derive(Copy, Clone, TypedI18N)]
 //! #[typed_i18n(filename = "example.yaml")]
 //! #[typed_i18n(builder = "mixed_str", prefix = "str_")]
 //! enum Language { En, De }
+//! # }
 //! ```
 //!
 //! Generated code:
@@ -58,12 +60,14 @@
 //!
 //! Different generators add different code:
 //! ```rust
+//! # #[cfg(feature = "alloc")] {
 //! # use typed_i18n::TypedI18N;
 //! # #[derive(Copy, Clone, TypedI18N)]
 //! # #[typed_i18n(filename = "example.yaml")]
 //! #[typed_i18n(builder = "static_str", prefix = "sta_")]
 //! #[typed_i18n(builder = "String")]
 //! # enum Language { En, De }
+//! # }
 //! ```
 //!
 //! Generated code:
@@ -258,6 +262,7 @@
 //! Example:
 //!
 //! ```rust
+//! # #[cfg(feature = "alloc")] {
 //! # use typed_i18n::TypedI18N;
 //! #[derive(Copy, Clone, TypedI18N)]
 //! #[typed_i18n(filename = "example.yaml")]
@@ -269,6 +274,7 @@
 //!   #[typed_i18n(fallback = "en, de")]
 //!   EnAu,
 //! }
+//! # }
 //! ```
 //!
 //! # Global

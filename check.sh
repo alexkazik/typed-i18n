@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e # exit on error
+set -x # show commands executed
+
 #
 # Perform a few simple checks ahead of a PR
 #
@@ -15,30 +18,34 @@ echo Using toolchain $TOOLCHAIN
 cargo $TOOLCHAIN update
 
 # builds (alloc, nothing)
-cargo $TOOLCHAIN build --release --all-features --tests || exit 1
-cargo $TOOLCHAIN build --release --no-default-features || exit 1
+cargo $TOOLCHAIN build --release --all-features --tests
+cargo $TOOLCHAIN build --release --no-default-features --tests
 
 TOOLCHAIN=${1:-+nightly}
 echo Using toolchain $TOOLCHAIN
 
 # builds (alloc, nothing)
-cargo $TOOLCHAIN build --release --all-features --tests || exit 1
-cargo $TOOLCHAIN build --release --no-default-features --tests || exit 1
+cargo $TOOLCHAIN build --release --all-features --tests
+cargo $TOOLCHAIN build --release --no-default-features --tests
 
 # clippy (alloc, nothing)
-cargo $TOOLCHAIN clippy --release --all-features --tests -- -D warnings || exit 1
-cargo $TOOLCHAIN clippy --release --no-default-features -- -D warnings || exit 1
+cargo $TOOLCHAIN clippy --release --all-features --tests -- -D warnings
+cargo $TOOLCHAIN clippy --release --no-default-features -- -D warnings
 
 # update formatting
-cargo $TOOLCHAIN fmt --all || exit 1
+for width in 500 400 300 200 150 130 110
+do
+  cargo $TOOLCHAIN fmt --all -- --config max_width=$width
+done
+cargo $TOOLCHAIN fmt --all
 
 # update readme
-( cd typed-i18n && cargo rdme --force ) || exit 1
+( cd typed-i18n && cargo rdme --force )
 
 # create docs
 if test "$TOOLCHAIN" = "+nightly"
 then
-  RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc -p typed-i18n --all-features || exit 1
+  RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc -p typed-i18n --all-features
 else
   echo "Skipping 'cargo doc' with doc_cfg since it's only available on nightly"
 fi
@@ -47,8 +54,15 @@ TOOLCHAIN=${1:-+stable}
 echo Using toolchain $TOOLCHAIN
 
 # tests
-cargo $TOOLCHAIN test --locked --release --all-features -- --include-ignored || exit 1
-cargo $TOOLCHAIN test --locked --release --no-default-features --lib --bins --tests -- --include-ignored || exit 1
+cargo $TOOLCHAIN test --locked --release --all-features -- --include-ignored
+cargo $TOOLCHAIN test --locked --release --no-default-features -- --include-ignored
 
 # build the examples
-( cd examples && cargo $TOOLCHAIN b ) || exit 1
+( cd examples && cargo $TOOLCHAIN build )
+
+if command -v typos >/dev/null 2>&1
+then
+  typos
+else
+  echo "typos check not run, see https://github.com/crate-ci/typos if interested"
+fi

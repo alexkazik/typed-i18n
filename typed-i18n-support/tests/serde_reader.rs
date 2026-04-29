@@ -27,7 +27,9 @@ fn invalid_json() {
         &Common::languages_en_de(),
         r#"{"hello": {"en": 4} }"#,
     );
-    diagnostic.assert(&["Span: Invalid JSON format, data did not match any variant of untagged enum ObjectOrString at line 1 column 21"]);
+    diagnostic.assert(&[
+        "Span: Invalid JSON format, data did not match any variant of untagged enum ObjectOrString at line 1 column 21",
+    ]);
 }
 
 #[test]
@@ -43,5 +45,7 @@ hello:
   en: 4
 "#,
     );
-    diagnostic.assert(&["Span: Invalid YAML format, data did not match any variant of untagged enum ObjectOrString at line 2 column 1"]);
+    diagnostic.assert(&[
+        "Span: Invalid YAML format, data did not match any variant of untagged enum ObjectOrString at line 2 column 1",
+    ]);
 }
