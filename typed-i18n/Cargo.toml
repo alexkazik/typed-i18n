@@ -21,7 +21,6 @@ rust-version = "1.85.0"
 typed-i18n-derive = { version = "=0.7.2", path = "../typed-i18n-derive" }
 
 [dev-dependencies]
-rustversion = "1.0.17"
 trybuild = { version = "=1.0.89", features = ["diff"] }
 
 [features]
