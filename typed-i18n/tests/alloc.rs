@@ -9,7 +9,7 @@ mod derive {
     use ::typed_i18n::TypedI18N;
 
     #[derive(Copy, Clone, TypedI18N)]
-    #[typed_i18n(filename = "example.yaml")]
+    #[typed_i18n(filename = "example.lrc")]
     #[typed_i18n(builder = "_")]
     pub enum Language {
         En,

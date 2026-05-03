@@ -39,9 +39,9 @@ fn no_messages() {
     let _messages = Messages::parse(
         diagnostic,
         Common::span(),
-        &Common::parameters_json(),
+        &Common::parameters_lrc(),
         &Common::languages_en_de(),
-        r#"{}"#,
+        r#""#,
     );
     diagnostic.assert(&["Span: no messages found"]);
 }
@@ -52,9 +52,13 @@ fn language_warning() {
     let _messages = Messages::parse(
         diagnostic,
         Common::span(),
-        &Common::parameters_json(),
+        &Common::parameters_lrc(),
         &Common::languages_en_de(),
-        r#"{"hello": {"en": "Hello", "unk": "Hello"} }"#,
+        r#"
+# hello
+en Hello
+unk Hello
+"#,
     );
     diagnostic.assert(&["Span: language unk is in the file (key hello) but not the enum"]);
 }
@@ -65,9 +69,13 @@ fn mismatching_types() {
     let _messages = Messages::parse(
         diagnostic,
         Common::span(),
-        &Common::parameters_json(),
+        &Common::parameters_lrc(),
         &Common::languages_en_de(),
-        r#"{"hello": {"en": "Hello %{name}", "de": "Hallo *{name}"} }"#,
+        r#"
+# hello
+en Hello %{name}
+de Hallo *{name}
+"#,
     );
     diagnostic.assert(&["Span: mismatching types for parameter name in key de"]);
 }
@@ -78,9 +86,12 @@ fn duplicate_typed_parameter() {
     let _messages = Messages::parse(
         diagnostic,
         Common::span(),
-        &Common::parameters_json(),
+        &Common::parameters_lrc(),
         &Common::languages_en_de(),
-        r#"{"hello": {"en": "Hello *{name}/*{name}"} }"#,
+        r#"
+# hello
+en Hello *{name}/*{name}
+"#,
     );
     diagnostic.assert(&["Span: duplicate use of a typed parameter: \"name\" in key hello.en"]);
 }
@@ -91,9 +102,13 @@ fn key_without_values() {
     let _messages = Messages::parse(
         diagnostic,
         Common::span(),
-        &Common::parameters_json(),
+        &Common::parameters_lrc(),
         &Common::languages_en_de(),
-        r#"{"hello": {"en": "Hello"}, "world": {} }"#,
+        r#"
+# hello
+en Hello
+# world
+"#,
     );
     diagnostic.assert(&["Span: key world has no values"]);
 }
@@ -104,9 +119,12 @@ fn parse_error1() {
     let _messages = Messages::parse(
         diagnostic,
         Common::span(),
-        &Common::parameters_json(),
+        &Common::parameters_lrc(),
         &Common::languages_en_de(),
-        r#"{"hello": {"en": "Hello %{"} }"#,
+        r#"
+# hello
+en Hello %{
+"#,
     );
     diagnostic.assert(&["Span: parse error in hello.en"]);
 }
@@ -117,9 +135,12 @@ fn parse_error2() {
     let _messages = Messages::parse(
         diagnostic,
         Common::span(),
-        &Common::parameters_json(),
+        &Common::parameters_lrc(),
         &Common::languages_en_de(),
-        r#"{"hello": {"en": "Hello %{ %{"} }"#,
+        r#"
+# hello
+en Hello %{ %{
+"#,
     );
     diagnostic.assert(&["Span: parse error in hello.en"]);
 }
