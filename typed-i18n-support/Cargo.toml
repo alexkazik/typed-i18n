@@ -12,14 +12,14 @@ readme = "README.md"
 rust-version = "1.85.0"
 
 [dependencies]
-convert_case = "0.11"
-indexmap = { version = "2", features = ["serde"] }
-ouroboros = "0.18.2"
+convert_case = { version = "0.11", default-features = false }
+indexmap = { version = "2", default-features = false, features = ["serde"] }
+ouroboros = { version = "0.18.2", default-features = false }
 proc-macro-error = { version = "1.0.4", default-features = false }
-proc-macro2 = "1"
-quote = "1.0.26"
-serde = { version = "1.0.157", features = ["derive"] }
-serde_json = "1.0.73"
-serde_yaml = "0.9.22"
+proc-macro2 = { version = "1", default-features = false }
+quote = { version = "1.0.26", default-features = false }
+serde = { version = "1.0.157", default-features = false, features = ["derive"] }
+serde_json = { version = "1.0.73", default-features = false, features = ["alloc"] }
+serde_yaml = { version = "0.9.22", default-features = false }
 syn = { version = "2", default-features = false, features = ["derive", "parsing", "printing", "proc-macro"] }
-unicode-ident = "1"
+unicode-ident = { version = "1", default-features = false }
