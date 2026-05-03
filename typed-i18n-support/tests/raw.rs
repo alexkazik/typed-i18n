@@ -56,7 +56,7 @@ fn language_warning() {
         &Common::languages_en_de(),
         r#"{"hello": {"en": "Hello", "unk": "Hello"} }"#,
     );
-    diagnostic.assert(&["Span: language unk key hello is not known"]);
+    diagnostic.assert(&["Span: language unk is in the file (key hello) but not the enum"]);
 }
 
 #[test]

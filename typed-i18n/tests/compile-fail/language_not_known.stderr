@@ -1,4 +1,4 @@
-error: language se key hello is not known
+error: language se is in the file (key hello) but not the enum
  --> tests/compile-fail/language_not_known.rs:4:1
   |
 4 | #[typed_i18n(filename = "tests/compile-fail/language_not_known.lrc")]

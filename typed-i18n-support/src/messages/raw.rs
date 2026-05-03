@@ -48,7 +48,10 @@ impl<'a> RawMessages<'a> {
         let mut params = Vec::new();
         for (lang, msg) in v {
             if !languages.iter().any(|l| l.name == lang) {
-                diagnostic.emit_error(span, format!("language {lang} key {k} is not known"));
+                diagnostic.emit_error(
+                    span,
+                    format!("language {lang} is in the file (key {k}) but not the enum"),
+                );
                 continue;
             }
             let msg_line = MessageLine::build(msg, |msg| {
