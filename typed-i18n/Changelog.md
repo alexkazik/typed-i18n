@@ -3,6 +3,7 @@
 ## upcoming
 
 * Bump to 2024 edition, msrv 1.85
+* Fix feature pass through
 
 ## 0.6.2 -- 2025-12-13
 

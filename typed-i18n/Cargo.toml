@@ -18,11 +18,11 @@ readme = "README.md"
 rust-version = "1.85.0"
 
 [dependencies]
-typed-i18n-derive = { version = "=0.7.2", path = "../typed-i18n-derive" }
+typed-i18n-derive = { version = "=0.7.2", path = "../typed-i18n-derive", default-features = false }
 
 [dev-dependencies]
 trybuild = { version = "=1.0.89", features = ["diff"] }
 
 [features]
 default = ["alloc"]
-alloc = []
+alloc = ["typed-i18n-derive/alloc"]
