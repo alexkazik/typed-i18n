@@ -1,5 +1,6 @@
 #![no_std]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(not(test), forbid(unused_crate_dependencies))]
 #![forbid(unsafe_code)]
 #![forbid(missing_docs)]
 #![warn(clippy::pedantic)]

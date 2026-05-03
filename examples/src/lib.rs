@@ -1,3 +1,7 @@
+#![forbid(unsafe_code)]
+#![forbid(unused_crate_dependencies)]
+#![warn(clippy::pedantic)]
+
 mod cows;
 mod html;
 

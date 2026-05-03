@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 #![forbid(missing_docs)]
+#![forbid(unused_crate_dependencies)]
 #![warn(clippy::pedantic)]
 
 //! Derive macro for [typed-i18n](https://docs.rs/typed-i18n/latest/typed-i18n/).
