@@ -2,17 +2,17 @@
 name = "typed-i18n-support"
 version = "0.7.2"
 authors = ["ALeX Kazik <alex@kazik.de>"]
-edition = "2021"
+edition = "2024"
 description = "Support crate for the derive macro for typed-i18n"
 repository = "https://github.com/alexkazik/typed-i18n"
 license = "MIT"
 keywords = []
 categories = []
 readme = "README.md"
-rust-version = "1.64.0"
+rust-version = "1.85.0"
 
 [dependencies]
-convert_case = "0.6"
+convert_case = "0.11"
 indexmap = { version = "2", features = ["serde"] }
 ouroboros = "0.18.2"
 proc-macro-error = { version = "1.0.4", default-features = false }

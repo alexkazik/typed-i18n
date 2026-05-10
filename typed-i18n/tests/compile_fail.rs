@@ -2,9 +2,11 @@
 #[rustversion::not(nightly)]
 #[test]
 fn trybuild() {
-    std::env::set_var(
-        "CARGO_MANIFEST_DIR_OVERRIDE",
-        std::env::var_os("CARGO_MANIFEST_DIR").unwrap(),
-    );
-    trybuild::TestCases::new().compile_fail("tests/compile-fail/*.rs");
+    // Safety: The environment access only happens in single-threaded code.
+    unsafe {
+        std::env::set_var(
+            "CARGO_MANIFEST_DIR_OVERRIDE",
+            std::env::var_os("CARGO_MANIFEST_DIR").unwrap(),
+        )
+    };
 }

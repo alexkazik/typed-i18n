@@ -64,9 +64,11 @@ impl<'a> RawMessages<'a> {
                             {
                                 if p_type != *old_p_type {
                                     diagnostic.emit_error(
-                                            span,
-                                            format!("mismatching types for parameter {p_name} in key {lang}")
-                                        );
+                                        span,
+                                        format!(
+                                            "mismatching types for parameter {p_name} in key {lang}"
+                                        ),
+                                    );
                                 }
                             } else {
                                 params.push((p_name.to_string(), p_type));

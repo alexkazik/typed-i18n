@@ -1,5 +1,5 @@
-use crate::attribute::parser::Parser;
 use crate::attribute::Builder;
+use crate::attribute::parser::Parser;
 use crate::diagnostic::Diagnostic;
 use proc_macro2::{Ident, Span};
 use syn::Type;

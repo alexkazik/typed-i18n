@@ -1,7 +1,7 @@
 use crate::diagnostic::Diagnostic;
+use crate::messages::MessagesAsTree;
 use crate::messages::messages::Messages;
 use crate::messages::raw::RawMessages;
-use crate::messages::MessagesAsTree;
 use indexmap::IndexMap;
 use proc_macro2::Span;
 use std::borrow::Cow;

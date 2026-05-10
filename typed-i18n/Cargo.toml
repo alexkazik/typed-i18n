@@ -2,7 +2,7 @@
 name = "typed-i18n"
 version = "0.6.2"
 authors = ["ALeX Kazik <alex@kazik.de>"]
-edition = "2021"
+edition = "2024"
 description = "A type safe i18n system"
 repository = "https://github.com/alexkazik/typed-i18n"
 license = "MIT"
@@ -15,7 +15,7 @@ keywords = [
 ]
 categories = ["localization", "internationalization", "no-std"]
 readme = "README.md"
-rust-version = "1.64.0"
+rust-version = "1.85.0"
 
 [dependencies]
 typed-i18n-derive = { version = "=0.7.2", path = "../typed-i18n-derive" }

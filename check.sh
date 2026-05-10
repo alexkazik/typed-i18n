@@ -7,12 +7,12 @@
 # Usage: `./check.sh` or `./check.sh <toolchain>`
 # If the toolchain is omitted `+nightly`,`+stable` and `+1.58.1` is used, `+stable` or `+beta` are the most common alternatives
 
-# 2021 edition: 1.56; implicit named arguments: 1.58, hashbrown: 1.63, serde_yaml: 1.64
-TOOLCHAIN=${1:-+1.64.0}
+# 2024 edition: 1.85
+TOOLCHAIN=${1:-+1.85.0}
 echo Using toolchain $TOOLCHAIN
 
 # use crates available at this rust version
-# cargo $TOOLCHAIN update # disabled because they don't work with this version of rust...
+cargo $TOOLCHAIN update
 
 # builds (alloc, nothing)
 cargo $TOOLCHAIN build --release --all-features --tests || exit 1

@@ -1,6 +1,6 @@
 [package]
 name = "examples"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 yew = "0.21.0"

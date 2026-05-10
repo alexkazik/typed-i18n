@@ -9,7 +9,7 @@ use proc_macro_error::{abort, proc_macro_error};
 use std::env;
 use std::path::PathBuf;
 use syn::spanned::Spanned;
-use syn::{parse_macro_input, DeriveInput};
+use syn::{DeriveInput, parse_macro_input};
 use typed_i18n_support::attribute::Attributes;
 use typed_i18n_support::diagnostic::ProcMacroError;
 use typed_i18n_support::languages::RawLanguages;
