@@ -64,6 +64,57 @@ unk Hello
 }
 
 #[test]
+fn language_ignored() {
+    let mut parameters = Common::parameters_lrc();
+    parameters.ignore_languages = vec!["unk".into()];
+    Messages::run_parse(
+        &parameters,
+        &Common::languages_en_de(),
+        r#"
+# hello
+en Hello
+unk Hello
+"#,
+    )
+    .expect("found errors/warnings");
+}
+
+#[test]
+fn language_ignored_all() {
+    let mut parameters = Common::parameters_lrc();
+    parameters.ignore_languages = vec!["*".into()];
+    Messages::run_parse(
+        &parameters,
+        &Common::languages_en_de(),
+        r#"
+# hello
+en Hello
+unk Hello
+"#,
+    )
+    .expect("found errors/warnings");
+}
+
+#[test]
+fn language_warning_no_windcard() {
+    let diagnostic = &mut Simulated::new();
+    let mut parameters = Common::parameters_lrc();
+    parameters.ignore_languages = vec!["u*".into()];
+    let _messages = Messages::parse(
+        diagnostic,
+        Common::span(),
+        &parameters,
+        &Common::languages_en_de(),
+        r#"
+# hello
+en Hello
+unk Hello
+"#,
+    );
+    diagnostic.assert(&["Span: language unk is in the file (key hello) but not the enum"]);
+}
+
+#[test]
 fn mismatching_types() {
     let diagnostic = &mut Simulated::new();
     let _messages = Messages::parse(

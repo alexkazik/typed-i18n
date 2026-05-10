@@ -24,12 +24,24 @@ impl Parameters {
                     None
                 }
             });
+            let ignore_languages = parser
+                .remove("ignore_languages")
+                .or_else(|| parser.remove("ignore_language"));
+            let ignore_languages = ignore_languages
+                .as_ref()
+                .map_or("", |(_, ls)| ls)
+                .split(',')
+                .map(str::trim)
+                .filter(|s| !s.is_empty())
+                .map(ToString::to_string)
+                .collect::<Vec<_>>();
             parser.finish(diagnostic);
             Some(Parameters {
                 span,
                 filename,
                 separator,
                 global,
+                ignore_languages,
             })
         } else {
             None

@@ -1,3 +1,4 @@
+use crate::attribute::Parameters;
 use crate::diagnostic::Diagnostic;
 use crate::languages::Languages;
 use crate::messages::message::Message;
@@ -19,6 +20,7 @@ impl<'a> RawMessages<'a> {
     pub(crate) fn parse_values<'b: 'a, D: Diagnostic>(
         diagnostic: &mut D,
         span: Span,
+        parameters: &Parameters,
         messages: RawMessages<'b>,
         languages: &Languages,
     ) -> Messages<'b> {
@@ -26,7 +28,7 @@ impl<'a> RawMessages<'a> {
             .0
             .into_iter()
             .filter_map(|(k, (path, v))| {
-                Self::parse_message(diagnostic, span, languages, k, path, v)
+                Self::parse_message(diagnostic, span, parameters, languages, k, path, v)
             })
             .collect::<IndexMap<_, _>>();
         if inner.is_empty() {
@@ -39,6 +41,7 @@ impl<'a> RawMessages<'a> {
     fn parse_message<'b, D: Diagnostic>(
         diagnostic: &mut D,
         span: Span,
+        parameters: &Parameters,
         languages: &Languages,
         k: Cow<'b, str>,
         path: Vec<Cow<'b, str>>,
@@ -48,10 +51,12 @@ impl<'a> RawMessages<'a> {
         let mut params = Vec::new();
         for (lang, msg) in v {
             if !languages.iter().any(|l| l.name == lang) {
-                diagnostic.emit_error(
-                    span,
-                    format!("language {lang} is in the file (key {k}) but not the enum"),
-                );
+                if !parameters.is_ignored_language(lang.as_ref()) {
+                    diagnostic.emit_error(
+                        span,
+                        format!("language {lang} is in the file (key {k}) but not the enum"),
+                    );
+                }
                 continue;
             }
             let msg_line = MessageLine::build(msg, |msg| {

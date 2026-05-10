@@ -6,6 +6,7 @@
 * Remove unsafe code
 * Improve warning
 * Add compile-time features
+* Feature: ignore undefined languages
 
 ## 0.7.2 -- 2025-12-13
 

@@ -103,6 +103,12 @@ Fields:
 - `filename`: the path to the translations, relative to the crate root (required).
 - `separator`: used for combining paths of a tree, default: `_`.
 - `global`: used for a global stored language, see [global](#global) below, default: not used.
+- `ignore_languages`: either `*` or a comma separated list of languages.
+  If it's `*` then all unknown languages in the file are silently skipped.
+  If it's one or more languages (empty string is silently skipped) then the
+  exact matching languages (no patterns) are silently ignored.
+  This option is in case you have more languages in the file than currently used.
+  This option can also be used as `ignore_language`, but not both at the same time.
 
 Example:
 

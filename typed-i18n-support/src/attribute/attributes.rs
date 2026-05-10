@@ -44,6 +44,7 @@ impl Attributes {
             filename: "*.*".to_string(),
             separator: "_".to_string(),
             global: None,
+            ignore_languages: Vec::new(),
         });
 
         Attributes {

@@ -31,6 +31,7 @@ pub struct Parameters {
     /// Used for joining key parts in serde tree input.
     pub separator: String,
     pub global: Option<Global>,
+    pub ignore_languages: Vec<String>,
 }
 
 #[derive(Copy, Clone)]
@@ -46,6 +47,12 @@ impl Parameters {
             filename: filename.to_string(),
             separator: separator.to_string(),
             global: None,
+            ignore_languages: Vec::new(),
         }
+    }
+
+    #[must_use]
+    pub fn is_ignored_language(&self, lang: &str) -> bool {
+        self.ignore_languages == ["*"] || self.ignore_languages.iter().any(|l| l == lang)
     }
 }

@@ -124,7 +124,7 @@ impl<'a> Messages<'a> {
             }
         };
         diagnostic.should_abort_if_dirty();
-        RawMessages::parse_values(diagnostic, span, raw, languages)
+        RawMessages::parse_values(diagnostic, span, parameters, raw, languages)
     }
 
     #[must_use]
