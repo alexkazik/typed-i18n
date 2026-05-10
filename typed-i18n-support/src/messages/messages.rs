@@ -89,7 +89,7 @@ impl<'a> Messages<'a> {
             None => {
                 diagnostic.emit_error(
                     span,
-                    format!("No file extension on {:?}", &parameters.filename),
+                    format!("No file extension on {:?}", parameters.filename),
                 );
                 RawMessages(IndexMap::default())
             }
