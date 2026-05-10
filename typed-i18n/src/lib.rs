@@ -398,6 +398,11 @@ pub trait Builder: Sized {
 }
 
 /// Trait to create localized strings from a reference to a value.
+///
+/// This is required if the output is more than a string and can contain
+/// non-string elements.
+///
+/// Please see the examples on how this may be used.
 pub trait BuilderFromRef<Input: ?Sized>: Builder {
     /// Add a typed parameter by reference to the builder.
     #[must_use]
@@ -405,6 +410,11 @@ pub trait BuilderFromRef<Input: ?Sized>: Builder {
 }
 
 /// Trait to create localized strings from a value.
+///
+/// This is required if the output is more than a string and can contain
+/// non-string elements.
+///
+/// Please see the examples on how this may be used.
 pub trait BuilderFromValue<Input>: Builder {
     /// Add a typed parameter by value to the builder.
     #[must_use]
