@@ -9,7 +9,6 @@ use indexmap::IndexMap;
 use proc_macro2::{Ident, Span};
 use std::borrow::Cow;
 use std::collections::HashSet;
-use std::str::from_utf8_unchecked;
 
 pub(crate) struct RawMessages<'a>(
     #[allow(clippy::type_complexity)]
@@ -101,11 +100,11 @@ impl<'a> RawMessages<'a> {
         span: Span,
         k: &str,
         lang: &str,
-        msg: &'b str,
+        msg_str: &'b str,
     ) -> Vec<Piece<'b>> {
         let mut r = Vec::new();
         let mut t_params = HashSet::new();
-        let msg = msg.as_bytes();
+        let msg = msg_str.as_bytes();
         let mut pos = 0;
         let mut start = 0;
         let mut in_param = false;
@@ -121,9 +120,7 @@ impl<'a> RawMessages<'a> {
                 } else {
                     if pos > start {
                         // this is safe because it's only cut on ascii chars
-                        r.push(Piece::Text(unsafe {
-                            from_utf8_unchecked(&msg[start..pos])
-                        }));
+                        r.push(Piece::Text(&msg_str[start..pos]));
                     }
                     in_param = true;
                     param_type = if msg[pos] == b'%' {
@@ -136,7 +133,7 @@ impl<'a> RawMessages<'a> {
                 }
             } else if msg[pos] == b'}' && in_param {
                 // this is safe because it's only cut on ascii chars
-                let p_name = unsafe { from_utf8_unchecked(&msg[start..pos]) };
+                let p_name = &msg_str[start..pos];
                 if syn::parse_str::<Ident>(p_name).is_err() {
                     diagnostic.emit_error(
                         span,
@@ -164,9 +161,7 @@ impl<'a> RawMessages<'a> {
             has_error = true;
         } else if pos > start {
             // this is safe because it's only cut on ascii chars
-            r.push(Piece::Text(unsafe {
-                from_utf8_unchecked(&msg[start..pos])
-            }));
+            r.push(Piece::Text(&msg_str[start..pos]));
         }
 
         if has_error {
