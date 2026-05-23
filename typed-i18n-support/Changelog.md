@@ -1,6 +1,6 @@
 # Changelog for typed-i18n-support
 
-## upcoming
+## 1.0.0 -- 2026-05-25
 
 * Bump to 2024 edition, msrv 1.85
 * Remove unsafe code

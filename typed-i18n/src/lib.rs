@@ -349,13 +349,13 @@
 //! To not use `alloc` but all file formats:
 //! ```toml
 //! [dependencies]
-//! typed-i18n = { version = "0.6", default-features = false, features = ["json", "yaml"] }
+//! typed-i18n = { version = "1", default-features = false, features = ["json", "yaml"] }
 //! ```
 //!
 //! If only `lrc` is used, the `json`, `yaml` (and serde) derive dependencies can be dropped:
 //! ```toml
 //! [dependencies]
-//! typed-i18n = { version = "0.6", default-features = false, features = ["alloc"] }
+//! typed-i18n = { version = "1", default-features = false, features = ["alloc"] }
 //! ```
 //! If `alloc` is not required, even that can be removed.
 

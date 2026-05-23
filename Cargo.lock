@@ -270,7 +270,7 @@ dependencies = [
 
 [[package]]
 name = "typed-i18n"
-version = "0.6.2"
+version = "1.0.0"
 dependencies = [
  "trybuild",
  "typed-i18n-derive",
@@ -278,7 +278,7 @@ dependencies = [
 
 [[package]]
 name = "typed-i18n-derive"
-version = "0.7.2"
+version = "1.0.0"
 dependencies = [
  "proc-macro-error",
  "syn",
@@ -287,7 +287,7 @@ dependencies = [
 
 [[package]]
 name = "typed-i18n-support"
-version = "0.7.2"
+version = "1.0.0"
 dependencies = [
  "convert_case",
  "indexmap",
